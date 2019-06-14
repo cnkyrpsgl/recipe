@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <div>
+        {% for recipe in recipes %}
+        <h1>{{ recipe.title }}</h1>
+        <img
+        src="{{ recipe.image.url }}"
+        class="img-fluid"
+        onclick="window.location='{% url 'detail' recipe.id %}';"
+        style="cursor: pointer; width: 40vw; height:60vh;"/>
+        <p>{{ recipe.summary }}</p>
+        <p>
+          <span>{{ recipe.pub_date_pretty }} &sdot; </span>
+          <span>{{ recipe.rate_avg }}/{{ recipe.rate_max }} ({{ recipe.rate_total }} votes) &sdot; </span>
+          {% if recipe.likes_total %}
+            <span>{{ recipe.likes_total }} likes &sdot; </span>
+          {% else %}
+            <span>No like &sdot; </span>
+          {% endif %}
+          <span>by {{ recipe.author.username }}</span>
+        </p>
+      {% endfor %}
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="row mb-sm-5 mt-sm-2">
+        <div>
+          <h4>Search</h4>
+          <br/>
+          <form method="POST" action="{% url 'iglist' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="text" name="ig_name" placeholder="Search for an ingredient">
+          <br/>
+          <input class="btn btn-primary mt-sm-2" type="submit" value="Submit" />
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s8 center-align">
+        <h4>Top Used Ingredients</h4>
+        {% for ingredient in ingredients%}
+        <li><a href="{% url 'recipes' ingredient.id %}">{{ ingredient.name }} ({{ ingredient.recipe_total }})</a></li>
+        {% endfor %}
+      </div>
+    </div>
+
+    </div>
+  </div>
+  {% if recipes.object_list %}
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="pagination ">
+        <span class="step-links mx-auto">
+            {% if recipes.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ recipes.previous_page_number }}">previous</a>
+            {% endif %}
+
+        <span class="current">
+            Page {{ recipes.number }} of {{ recipes.paginator.num_pages }}.
+        </span>
+
+        {% if recipes.has_next %}
+            <a href="?page={{ recipes.next_page_number }}">next</a>
+            <a href="?page={{ recipes.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+        </span>
+      </div>
+    </div>
+  </div>
+{% endif %}
+</div>
+{% endblock %}

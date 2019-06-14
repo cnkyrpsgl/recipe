@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h5>{{ recipe.title }}</h5>
+<span><span class="oi oi-person"></span> {{ recipe.author.username }} &sdot; </span>
+<span><span class="oi oi-info"></span> {{ recipe.difficulty }} &sdot; </span>
+<span><span class="oi oi-clock"></span> {{ recipe.pub_date_pretty }}</span>
+<br/>
+<img src="{{ recipe.image.url }}" class="img-fluid" />
+<br/>
+<br/>
+<a href="javascript:{document.getElementById('upvote').submit()}"><button class="btn btn-primary"><span class="oi oi-thumb-up"></span> Like ({{ recipe.likes_total }})</button></a>
+<br/>
+<br/>
+<h5>Ingredients</h5>
+{% for ingredient in igs %}
+<li>{{ ingredient.name }}</li>
+{% endfor %}
+<br/>
+<h4>Description</h4>
+<p>{{ recipe.description }}</p>
+<br/>
+<form id="rate" method="POST" action="{% url 'rate' recipe.id %}">
+  {% csrf_token%}
+  <select name="rate_val">
+    <option value="0">0</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+  <input class="btn btn-primary" type="submit" value="rate" />
+</form>
+<form id="upvote" method="POST" action="{% url 'upvote' recipe.id %}">
+  {% csrf_token%}
+  <input type="hidden">
+</form>
+{% endblock %}

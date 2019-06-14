@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for recipe in recipes %}
+  <div>
+    <h1>{{ recipe.title }}</h1>
+    <img src="{{ recipe.image.url }}" class="img-fluid" onclick="window.location='{% url 'detail' recipe.id %}';" style="cursor: pointer; width: 40vw; height:60vh;"/>
+    <p>{{ recipe.summary }}</p>
+    <p>
+      <span>{{ recipe.pub_date_pretty }} &sdot; </span>
+      <span>{{ recipe.rate_avg }}/{{ recipe.rate_max }} ({{ recipe.rate_total }} votes) &sdot; </span>
+      {% if recipe.likes_total %}
+        <span>{{ recipe.likes_total }} likes &sdot; </span>
+      {% else %}
+        <span>No like &sdot; </span>
+      {% endif %}
+      <span>by {{ recipe.author.username }}</span>
+    </p>
+    <a href="javascript:{document.getElementById('edit{{ recipe.id }}').submit()}"><button class="btn btn-primary"><span class="oi oi-wrench"></span></button></a>
+    <a href="javascript:{document.getElementById('delete{{ recipe.id }}').submit()}"><button class="btn btn-primary"><span class="oi oi-trash"></span></button></a>
+    <form id="delete{{ recipe.id }}" action="{% url 'delete' recipe.id %}" method="POST" type="hidden">
+        {% csrf_token %}
+    </form>
+    <form id="edit{{ recipe.id }}" action="{% url 'edit' recipe.id %}" method="GET" type="hidden">
+        {% csrf_token %}
+    </form>
+  </div>
+{% endfor %}
+{% endblock %}

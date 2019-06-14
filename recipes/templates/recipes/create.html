@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% if error %}
+{{ error }}
+<br />
+<br />
+{% endif %}
+
+<form method="POST" action="{% url 'create' %}" enctype="multipart/form-data">
+{% csrf_token %}
+<table>
+  {{RecipeForm}}
+</table>
+<input class="btn btn-primary" type="submit" value="Share" />
+</form>
+{% endblock %}
